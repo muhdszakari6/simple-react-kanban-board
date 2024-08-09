@@ -1,10 +1,24 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { resolve } from 'path'
+import { join, resolve } from 'path'
+import dts from 'vite-plugin-dts'
+import { externalizeDeps } from 'vite-plugin-externalize-deps'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    dts(),
+    externalizeDeps({
+      deps: false,
+      devDeps: false,
+      except: [],
+      nodeBuiltins: true,
+      optionalDeps: true,
+      peerDeps: true,
+      useFile: join(process.cwd(), 'package.json'),
+    })
+  ],
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points
@@ -26,5 +40,6 @@ export default defineConfig({
         },
       },
     },
-  },
+  }
+  ,
 })
